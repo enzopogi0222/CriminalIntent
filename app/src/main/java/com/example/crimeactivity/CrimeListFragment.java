@@ -89,7 +89,7 @@ public class CrimeListFragment extends Fragment {
             mContactPoliceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "Calling Police!", Toast.LENGTH_SHORT).show();
+                    contactPolice();
                 }
             });
         }
@@ -100,6 +100,17 @@ public class CrimeListFragment extends Fragment {
             String formattedDate = DateFormat.format("EEEE, MMM dd, yyyy", mCrime.getDate()).toString();
             mDateTextView.setText(formattedDate);
             mSolvedImageView.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
+            if (crime.isSolved()){
+                mContactPoliceButton.setVisibility(View.GONE);
+            } else {
+                mContactPoliceButton.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void contactPolice() {
+            Toast.makeText(getActivity(), "Calling Police!", Toast.LENGTH_SHORT).show();
+            mContactPoliceButton.setVisibility(View.GONE);
+            mSolvedImageView.setVisibility(View.VISIBLE);
         }
 
         @Override

@@ -10,22 +10,19 @@ public class CrimeLab {
     private static CrimeLab sCrimeLab;
     private List<Crime> mCrimes;
 
-    public static CrimeLab get(Context context) {
-        if (sCrimeLab == null) {
+    public static CrimeLab get(Context context){
+        if (sCrimeLab == null){
             sCrimeLab = new CrimeLab(context);
         }
         return sCrimeLab;
     }
-    private CrimeLab(Context context) {
+    private CrimeLab(Context context){
         mCrimes = new ArrayList<>();
-        for (int i = 0; i < 100; i++){
+        for (int i=0; i < 100; i++){
             Crime crime = new Crime();
-            crime.setTitle("Crime # " + i);
-            crime.setSolved(i % 2 == 0);
-
-            if(i % 2 == 0){
-                crime.setRequiresPolice(true);
-            }
+            crime.setTitle("Crime #" + i);
+            crime.setSolved(false);
+            crime.setRequiresPolice(i % 2 == 0);
             mCrimes.add(crime);
         }
     }
@@ -35,11 +32,12 @@ public class CrimeLab {
     }
 
     public Crime getCrime(UUID id){
-        for (Crime crime: mCrimes) {
+        for (Crime crime : mCrimes){
             if (crime.getId().equals(id)){
                 return crime;
             }
         }
         return null;
     }
+
 }
