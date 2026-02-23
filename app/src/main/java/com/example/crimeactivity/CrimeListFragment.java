@@ -1,5 +1,6 @@
 package com.example.crimeactivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -16,10 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.UUID;
 
 public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private int updatedCrimePosition = -1;
+    private static final int REQUEST_CRIME = 1;
 
 
 
@@ -41,16 +45,47 @@ public class CrimeListFragment extends Fragment {
         updateUI();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CRIME) {
+            if (data == null) {
+                return;
+            }
+
+            UUID crimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+            updatedCrimePosition = -1;
+
+            CrimeLab crimeLab = CrimeLab.get(getActivity());
+            List<Crime> crimes = crimeLab.getCrimes();
+            for (int i = 0; i < crimes.size(); i++) {
+                if (crimes.get(i).getId().equals(crimeId)) {
+                    updatedCrimePosition = i;
+                    break;
+                }
+            }
+        }
+    }
+
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
-       if(mAdapter == null){
-           mAdapter = new CrimeAdapter(crimes);
-           mCrimeRecyclerView.setAdapter(mAdapter);
-       } else {
-           mAdapter.notifyDataSetChanged();
-       }
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setCrimes(crimes);
+            if (updatedCrimePosition != -1) {
+                mAdapter.notifyItemChanged(updatedCrimePosition);
+                updatedCrimePosition = -1; // Reset the position
+            } else {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private class NormalCrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -77,7 +112,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View view){
             Intent intent = MainActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CRIME);
         }
 
     }
@@ -126,7 +161,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             Intent intent = MainActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CRIME);
         }
     }
 
@@ -166,6 +201,10 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        public void setCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
         }
 
         @Override

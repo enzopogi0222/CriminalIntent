@@ -1,5 +1,7 @@
 package com.example.crimeactivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +23,8 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
     private static final String ARG_CRIME_ID = "crime_id";
+    public static final String EXTRA_CRIME_ID = "com.example.crimeactivity.crime_id";
+
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -60,6 +64,7 @@ public class CrimeFragment extends Fragment {
         public void onTextChanged(
                 CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                returnResult();
 
         }
 
@@ -76,10 +81,17 @@ public class CrimeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked){
                 mCrime.setSolved(isChecked);
+                returnResult();
             }
 
         });
 
     return v;
+    }
+
+    public void returnResult() {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_CRIME_ID, mCrime.getId());
+        getActivity().setResult(Activity.RESULT_OK, data);
     }
 }
