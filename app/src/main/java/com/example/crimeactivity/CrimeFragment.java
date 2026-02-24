@@ -89,6 +89,13 @@ public class CrimeFragment extends Fragment {
     return v;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+    }
+
     public void returnResult() {
         Intent data = new Intent();
         data.putExtra(EXTRA_CRIME_ID, mCrime.getId());

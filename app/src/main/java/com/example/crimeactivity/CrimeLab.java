@@ -29,6 +29,10 @@ public class CrimeLab {
         }
     }
 
+    public void updateCrime(Crime crime) {
+        mCrimes.put(crime.getId(), crime);
+    }
+
     public List<Crime> getCrimes(){
         return new ArrayList<>(mCrimes.values());
     }
