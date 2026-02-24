@@ -3,6 +3,8 @@ package com.example.crimeactivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -15,6 +17,8 @@ import java.util.UUID;
 public class CrimePagerActivity extends AppCompatActivity {
     private ViewPager2 mViewPager;
     private List<Crime> mCrimes;
+    private Button mJumpToFirstButton;
+    private Button mJumpToLastButton;
     private static final String EXTRA_CRIME_ID = "com.example.crimeactivity.crime_id";
 
     public static Intent newIntent(Context packageContext, UUID crimeId){
@@ -31,6 +35,8 @@ public class CrimePagerActivity extends AppCompatActivity {
                 .getSerializableExtra(EXTRA_CRIME_ID);
 
         mViewPager = findViewById(R.id.crime_view_pager);
+        mJumpToFirstButton = findViewById(R.id.jump_to_first_button);
+        mJumpToLastButton = findViewById(R.id.jump_to_last_button);
 
         mCrimes = CrimeLab.get(this).getCrimes();
         mViewPager.setAdapter(new FragmentStateAdapter(this) {
@@ -45,6 +51,30 @@ public class CrimePagerActivity extends AppCompatActivity {
                 return mCrimes.size();
             }
         });
+
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mJumpToFirstButton.setEnabled(position != 0);
+                mJumpToLastButton.setEnabled(position != mCrimes.size() - 1);
+            }
+        });
+
+        mJumpToFirstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(0);
+            }
+        });
+
+        mJumpToLastButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(mCrimes.size() - 1);
+            }
+        });
+
         for (int i = 0; i < mCrimes.size(); i++) {
             if (mCrimes.get(i).getId().equals(crimeId)) {
                 mViewPager.setCurrentItem(i);
