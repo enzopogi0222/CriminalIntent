@@ -153,6 +153,8 @@ public class CrimeListFragment extends Fragment {
         }
 
         private void contactPolice() {
+            mCrime.setSolved(true);
+            CrimeLab.get(getActivity()).updateCrime(mCrime);
             Toast.makeText(getActivity(), "Calling Police!", Toast.LENGTH_SHORT).show();
             mContactPoliceButton.setVisibility(View.GONE);
             mSolvedImageView.setVisibility(View.VISIBLE);
