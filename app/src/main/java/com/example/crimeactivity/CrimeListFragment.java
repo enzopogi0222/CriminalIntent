@@ -79,12 +79,7 @@ public class CrimeListFragment extends Fragment {
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.setCrimes(crimes);
-            if (updatedCrimePosition != -1) {
-                mAdapter.notifyItemChanged(updatedCrimePosition);
-                updatedCrimePosition = -1; // Reset the position
-            } else {
-                mAdapter.notifyDataSetChanged();
-            }
+            mAdapter.notifyDataSetChanged();
         }
     }
 

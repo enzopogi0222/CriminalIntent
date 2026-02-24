@@ -84,5 +84,11 @@ public class CrimePagerActivity extends AppCompatActivity {
 
 
         }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCrimes = CrimeLab.get(this).getCrimes();
+        mViewPager.getAdapter().notifyDataSetChanged();
+    }
     }
 
