@@ -9,6 +9,7 @@
     <string name="contact_police_button">Contact Police</string>
     <string name="jump_to_first">Jump to First</string>
     <string name="jump_to_last">Jump to Last</string>
+    <string name="date_picker_title">Date of crime:</string>
 
 
 </resources>
