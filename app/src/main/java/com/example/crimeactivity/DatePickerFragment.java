@@ -3,11 +3,11 @@ package com.example.crimeactivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 
 import androidx.fragment.app.DialogFragment;
@@ -48,28 +48,30 @@ public class DatePickerFragment extends DialogFragment {
 
         mDatePicker = (DatePicker) v.findViewById(R.id.dialog_date_picker);
         mDatePicker.init(year, month, day, null);
+
+        Button okButton = (Button) v.findViewById(R.id.dialog_date_ok_button);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int year = mDatePicker.getYear();
+                int month = mDatePicker.getMonth();
+                int day = mDatePicker.getDayOfMonth();
+
+                Date originalDate = (Date) getArguments().getSerializable(ARG_DATE);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(originalDate);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+
+                Date date = new GregorianCalendar(year, month, day, hour, minute).getTime();
+                sendResult(Activity.RESULT_OK, date);
+                dismiss();
+            }
+        });
+
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
                 .setTitle(R.string.date_picker_title)
-                .setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int year = mDatePicker.getYear();
-                                int month = mDatePicker.getMonth();
-                                int day = mDatePicker.getDayOfMonth();
-
-                                Date originalDate = (Date) getArguments().getSerializable(ARG_DATE);
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(originalDate);
-                                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                                int minute = calendar.get(Calendar.MINUTE);
-
-                                Date date = new GregorianCalendar(year, month, day, hour, minute).getTime();
-                                sendResult(Activity.RESULT_OK, date);
-
-                            }
-                        })
                 .create();
     }
 
